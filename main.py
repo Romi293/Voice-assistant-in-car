@@ -1,4 +1,5 @@
 # allow using voice commend
+import os
 import sys
 
 import speech_recognition as sr
@@ -17,6 +18,8 @@ import time
 import wikipedia
 
 import webbrowser
+
+import winsound
 
 # true if it's the first entrance to the system each time
 global first
@@ -37,14 +40,31 @@ engine.setProperty('rate', 130)
 engine.setProperty('voice', voices[2].id)
 
 
+def listening():
+    frequency = 300  # Set Frequency To 2500 Hertz
+    duration = 200  # Set Duration To 1000 ms == 1 second
+    winsound.Beep(frequency, duration)
+
+    print("Talk now")
+    with sr.Microphone() as source:
+        # save the sentence
+        voice = listener.listen(source)
+        # send the sentence to google
+        command = listener.recognize_google(voice)
+        command = command.lower()
+        # print(command)
+        return command
+
+
 def talk(text):
+    print(text.capitalize())
     engine.say(text)
     engine.runAndWait()
 
 
 def exit_REA():
-    print("Exit")
     talk("Goodbye")
+    print("Exit")
     sys.exit(0)
 
 
@@ -60,26 +80,28 @@ def greeting():
             talk('Good evening')
     else:
         pass
+    once_greet = False
 
 
-def time():
-    time = datetime.datetime.now().strftime('%H:%M:%S')
-    talk('the time is' + time)
-    print(time)
+def clocktime():
+    clock = datetime.datetime.now().strftime('%H:%M:%S')
+    talk('the time is' + clock)
+    print(clock)
 
 
 def playYouTube(command):
     song = command.replace('play', '')
-    talk('playing' + song + '. I wont disturb you, enjoy!')
+    talk('playing' + song + '. I won'+"'"+'t disturb you, enjoy!'.capitalize())
     # open YouTube to play
     pywhatkit.playonyt(song)
     exit(0)
 
 
 def googleSearch(command):
-    google = command.replace('search for', '')
-    talk('search' + google)
-    pywhatkit.info(google)
+    google = command.replace('search', '')
+    google = google.replace('on Google', '')
+    talk('search' + google + 'on Google')
+    pywhatkit.search(google)
 
 
 def wikiSearch(command):
@@ -95,85 +117,58 @@ def navigate(command):
     webbrowser.open("https://www.google.com/maps/place/" + location)
 
 
-def sendWhatsapp(command):
-    with sr.Microphone() as source:
-        talk("To whom do you want to send?")
-        receiver = command.replace('send to', '')
-        voice = listener.listen(source)
-        # send the sentence to google
-        receiver = listener.recognize_google(voice)
-
-        talk("What do you want to send?")
-        voice = listener.listen(source)
-        # send the sentence to google
-        msg = listener.recognize_google(voice)
-
-        talk("The message " + msg + " was sent to " + receiver + " successfully")
-        print("The message " + msg + " was sent to " + receiver + " successfully")
-    first = False
-    return first
-
-    # pywhatkit.sendwhatmsg("=+972528620066", "Hello Romi", 20, 31)
-
-
-def take_command():
-    try:
-        # set the voice commend trow mic
-        with sr.Microphone() as source:
-            # verified that the assistant listen
-            # save the sentence
-            voice = listener.listen(source)
-            # send the sentence to google
-            command = listener.recognize_google(voice)
-            command = command.lower()
-            '''
-            if 'rea' in command:
-                # remove a word from speech
-                command = command.replace('alexa', '')
-                print("yeah!")
-            # verified that the voice is equal to the Google recognizer
-            else:
-                print(command)
-            '''
-    except:
-        pass
-    return command
+def sendWhatsapp(name, msg):
+    hour = datetime.datetime.now().hour
+    minutes = datetime.datetime.now().minute
+    if 'Romi' in name:
+        pywhatkit.sendwhatmsg("=+972528620066", msg, hour, minutes + 1)
+    elif 'Nitzan' in name:
+        pywhatkit.sendwhatmsg("=+972526806124", msg, hour, minutes + 1)
+    else:
+        pywhatkit.sendwhatmsg("=+972547831909", msg, hour, minutes + 1)
 
 
 def run_REA():
+    greeting()
     global first
-    print(str(first))
     if first:
         talk("What can I do for you?")
-        command = take_command()
+        command = listening()
         if 'play' in command:
             playYouTube(command)
         elif 'send' in command:
-            sendWhatsapp(command)
+            talk("To whom do you want to send?")
+            command = listening()
+            name = command
+            talk("What do you want to send?")
+            msg = listening()
+            talk("The message " + msg + " will be sent to " + name + " in a couple of seconds")
+            print("The message " + msg + " will be sent to " + name + " in a couple of seconds")
+            sendWhatsapp(msg, name)
         elif 'what is the time' in command:
-            time()
+            clocktime()
         elif 'wikipedia' in command:
             wikiSearch(command)
         elif 'google' in command:
             googleSearch(command)
         elif 'navigate' in command:
             navigate(command)
-        elif 'goodbye' or 'bye bye' or 'exit' or 'nothing' or 'no' in command:
+        elif 'exit' in command:
             exit_REA()
         else:
             talk("Please say it again")
+            run_REA()
         first = False
     else:
         talk("Do you need something else?")
-        command = take_command()
+        command = listening()
+        print(command)
         if 'yes' in command:
             first = True
-            run_REA()
         elif 'no' in command:
             exit_REA()
-    first = False
+            first = False
 
 
 while True:
-    greeting()
     run_REA()
