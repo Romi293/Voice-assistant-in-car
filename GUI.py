@@ -2,10 +2,15 @@ import tkinter as tk
 from tk import *
 # pip install pillow
 from PIL import Image, ImageTk
+
 import main2
 
 
-def func():
+def sayHello():
+    print("button clicked!")
+
+
+def openWindow():
     window = tk.Tk()
     window.configure(background='black')
 
@@ -14,7 +19,7 @@ def func():
     startIcon = tk.PhotoImage(file=r"pics/start.png")  # with tk
     logoIcon = ImageTk.PhotoImage(file=r"pics/logo.png")  # with PIL.ImageTk
 
-    startBtn = tk.Button(window, image=startIcon, height=25, width=25)  # set button size
+    startBtn = tk.Button(window, image=startIcon, command=sayHello(), height=25, width=25)  # set button size
     startBtn.place(x=280, y=300)  # set button position
 
     ReaImg = tk.Label(window, image=logoIcon, height=90, width=90)  # set image size
@@ -25,9 +30,5 @@ def func():
     window.mainloop()
 
 
-def func2():
-    print("Hello")
-
-
 if __name__ == "__main__":
-    func2()
+    openWindow()
