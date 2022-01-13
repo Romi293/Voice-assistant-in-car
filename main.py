@@ -22,6 +22,8 @@ import webbrowser
 import winsound
 
 # true if it's the first entrance to the system each time
+import GUI
+
 global first
 first = True
 
@@ -91,16 +93,16 @@ def clocktime():
 
 def playYouTube(command):
     song = command.replace('play', '')
-    talk('playing' + song + '. I won'+"'"+'t disturb you, enjoy!'.capitalize())
+    talk('playing' + song + '. I won' + "'" + 't disturb you, enjoy!'.capitalize())
     # open YouTube to play
     pywhatkit.playonyt(song)
     exit(0)
 
 
 def googleSearch(command):
-    google = command.replace('search', '')
-    google = google.replace('on Google', '')
-    talk('search' + google + 'on Google')
+    google = command.replace('search for', '')
+    google = google.replace('on google', '')
+    talk('searching' + google + 'on Google')
     pywhatkit.search(google)
 
 
@@ -122,6 +124,8 @@ def sendWhatsapp(name, msg):
     minutes = datetime.datetime.now().minute
     if 'Romi' in name:
         pywhatkit.sendwhatmsg("=+972528620066", msg, hour, minutes + 1)
+        print("The message " + '"' + msg + '"' + " will be sent to " + name + " in a couple of seconds")
+
     elif 'Nitzan' in name:
         pywhatkit.sendwhatmsg("=+972526806124", msg, hour, minutes + 1)
     else:
@@ -170,5 +174,5 @@ def run_REA():
             first = False
 
 
-while True:
+if __name__ == "__main__":
     run_REA()
