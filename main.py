@@ -175,4 +175,4 @@ def run_REA():
 
 
 if __name__ == "__main__":
-    run_REA()
+    GUI.openWindow()
