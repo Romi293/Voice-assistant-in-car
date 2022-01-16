@@ -20,12 +20,11 @@ def changeBtnState():
 
 
 def run():
-    print("Button clicked!")
-    main.run_REA()
+    while True:
+        main.run_REA()
 
 
 def exit():
-    print("Exit button clicked")
     main.exit_REA()
 
 
