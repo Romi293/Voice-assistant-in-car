@@ -47,19 +47,18 @@ def listening():
     duration = 200  # Set Duration To 1000 ms == 1 second
     winsound.Beep(frequency, duration)
 
-    print("Talk now")
     with sr.Microphone() as source:
         # save the sentence
         voice = listener.listen(source)
         # send the sentence to google
         command = listener.recognize_google(voice)
         command = command.lower()
-        # print(command)
+        print("Driver: " + command.capitalize())
         return command
 
 
 def talk(text):
-    print(text.capitalize())
+    print("REA: " + text.capitalize())
     engine.say(text)
     engine.runAndWait()
 
@@ -87,7 +86,7 @@ def greeting():
 
 def clocktime():
     clock = datetime.datetime.now().strftime('%H:%M:%S')
-    talk('the time is' + clock)
+    talk('the time is ' + clock)
     print(clock)
 
 
@@ -109,13 +108,12 @@ def googleSearch(command):
 def wikiSearch(command):
     wisdom = command.replace('Im searching in wikipedia', '')
     info = wikipedia.summary(wisdom, 1)
-    print(info)
     talk(info)
 
 
 def navigate(command):
     location = command.replace('navigate to', '')
-    talk('navigate to' + location)
+    talk('navigating to' + location)
     webbrowser.open("https://www.google.com/maps/place/" + location)
 
 
@@ -124,8 +122,6 @@ def sendWhatsapp(name, msg):
     minutes = datetime.datetime.now().minute
     if 'Romi' in name:
         pywhatkit.sendwhatmsg("=+972528620066", msg, hour, minutes + 1)
-        print("The message " + '"' + msg + '"' + " will be sent to " + name + " in a couple of seconds")
-
     elif 'Nitzan' in name:
         pywhatkit.sendwhatmsg("=+972526806124", msg, hour, minutes + 1)
     else:
@@ -147,11 +143,10 @@ def run_REA():
             talk("What do you want to send?")
             msg = listening()
             talk("The message " + msg + " will be sent to " + name + " in a couple of seconds")
-            print("The message " + msg + " will be sent to " + name + " in a couple of seconds")
             sendWhatsapp(msg, name)
         elif 'what is the time' in command:
             clocktime()
-        elif 'wikipedia' in command:
+        elif 'know' in command:
             wikiSearch(command)
         elif 'google' in command:
             googleSearch(command)
@@ -166,7 +161,6 @@ def run_REA():
     else:
         talk("Do you need something else?")
         command = listening()
-        print(command)
         if 'yes' in command:
             first = True
         elif 'no' in command:
