@@ -38,8 +38,8 @@ engine = pyttsx3.init()
 # get a voice
 voices = engine.getProperty('voices')
 # set it to the program
-engine.setProperty('rate', 130)
-engine.setProperty('voice', voices[2].id)
+engine.setProperty('rate', 180)
+engine.setProperty('voice', voices[1].id)
 
 
 def listening():
@@ -120,12 +120,12 @@ def navigate(command):
 def sendWhatsapp(name, msg):
     hour = datetime.datetime.now().hour
     minutes = datetime.datetime.now().minute
-    if 'Romi' in name:
-        pywhatkit.sendwhatmsg("=+972528620066", msg, hour, minutes + 1)
-    elif 'Nitzan' in name:
-        pywhatkit.sendwhatmsg("=+972526806124", msg, hour, minutes + 1)
+    if 'Alex' in name:
+        pywhatkit.sendwhatmsg("", msg, hour, minutes + 1)   # Enter phone number
+    elif 'John' in name:
+        pywhatkit.sendwhatmsg("", msg, hour, minutes + 1)   # Enter phone number
     else:
-        pywhatkit.sendwhatmsg("=+972547831909", msg, hour, minutes + 1)
+        pywhatkit.sendwhatmsg("", msg, hour, minutes + 1)
 
 
 def run_REA():
